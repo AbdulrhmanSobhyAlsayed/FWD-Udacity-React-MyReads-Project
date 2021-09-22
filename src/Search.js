@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import * as BooksAPI from "./BooksAPI";
 import { Link } from "react-router-dom";
 import ListBooksType from "./ListBooksType";
+import _ from "lodash";
 
 class Search extends Component {
   state = {
@@ -12,9 +13,10 @@ class Search extends Component {
     const originalBooks = await BooksAPI.getAll();
     this.setState({ originalBooks });
   }
-  handleChangeSearch = async (value) => {
+  handleChangeSearch = _.debounce(async (value) => {
     if (value) {
       const books = await BooksAPI.search(value);
+
       if (!books.error) {
         let displayBooks = [...books];
         displayBooks.forEach((book) => {
@@ -23,19 +25,25 @@ class Search extends Component {
           );
           if (originalIndex > 0) {
             book.shelf = this.state.originalBooks[originalIndex].shelf;
+          } else {
+            book.shelf = "none";
           }
         });
-        this.setState({ books: displayBooks });
+        return this.setState({ books: displayBooks });
       }
     }
-  };
+    return this.setState({ books: [] });
+  }, 500);
   updateShelfStatus = async (id, value) => {
     const books = await BooksAPI.update(id, value);
-    if (books[value].includes(id)) {
+    if (books) {
       let updatedBooks = [...this.state.books];
       let index = updatedBooks.findIndex((book) => book.id === id);
       updatedBooks[index].shelf = value;
       this.setState({ books: updatedBooks });
+
+      const originalBooks = await BooksAPI.getAll();
+      this.setState({ originalBooks });
     }
   };
   render() {

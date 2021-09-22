@@ -15,9 +15,9 @@ const ListBooksType = ({ books, shelfStatus, handleChangeStatus }) => {
             <li key={book.id}>
               <Book
                 bookId={book.id}
-                bookName={book.title}
-                bookAuthor={book.authors}
-                bookUrl={book.imageLinks.thumbnail}
+                bookName={book.title || "not mentioned"}
+                bookAuthor={book.authors || "not mentioned"}
+                bookUrl={book.imageLinks ? book.imageLinks.thumbnail : "#"}
                 bookStatus={book.shelf}
                 handleChangeStatus={handleChangeStatus}
               />
@@ -29,7 +29,7 @@ const ListBooksType = ({ books, shelfStatus, handleChangeStatus }) => {
   );
 };
 
-ListBooksType.prototype = {
+ListBooksType.propTypes = {
   books: PropTypes.array.isRequired,
   shelfStatus: PropTypes.string.isRequired,
   handleChangeStatus: PropTypes.func.isRequired,

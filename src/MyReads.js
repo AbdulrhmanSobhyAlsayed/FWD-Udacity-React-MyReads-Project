@@ -13,10 +13,16 @@ class MyReads extends Component {
   }
   updateShelfStatus = async (id, value) => {
     const books = await BooksAPI.update(id, value);
-    if (books[value].includes(id)) {
+    if (value !== "none") {
+      if (books[value].includes(id)) {
+        let updatedBooks = [...this.state.books];
+        let index = updatedBooks.findIndex((book) => book.id === id);
+        updatedBooks[index].shelf = value;
+        this.setState({ books: updatedBooks });
+      }
+    } else {
       let updatedBooks = [...this.state.books];
-      let index = updatedBooks.findIndex((book) => book.id === id);
-      updatedBooks[index].shelf = value;
+      updatedBooks = updatedBooks.filter((book) => book.id !== id);
       this.setState({ books: updatedBooks });
     }
   };

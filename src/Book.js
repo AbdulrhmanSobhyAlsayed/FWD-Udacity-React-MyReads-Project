@@ -22,7 +22,7 @@ const Book = ({
         />
         <div className="book-shelf-changer">
           <select
-            value={bookStatus}
+            value={bookStatus || "none"}
             onChange={(event) => {
               handleChangeStatus(bookId, event.target.value);
             }}
@@ -43,11 +43,11 @@ const Book = ({
   );
 };
 
-Book.prototype = {
+Book.propTypes = {
   bookId: PropTypes.string.isRequired,
   bookUrl: PropTypes.string.isRequired,
   bookName: PropTypes.string.isRequired,
-  bookAuthor: PropTypes.string.isRequired,
+  bookAuthor: PropTypes.any.isRequired,
   bookStatus: PropTypes.string.isRequired,
   handleChangeStatus: PropTypes.func.isRequired,
 };
